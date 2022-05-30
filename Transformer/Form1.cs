@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Serialization;
+using System.Xml.XPath;
 using System.Xml.Xsl;
 
 namespace Transformer
@@ -24,12 +26,11 @@ namespace Transformer
         {
             string input = "";
             string xslt = "";
+
+            input = File.ReadAllText(textBox1.Text,Encoding.UTF8);
+            xslt = File.ReadAllText(textBox2.Text, Encoding.UTF8);
             string output = TransformXMLToHTML(input, xslt, ".net");
-
-
-
-            //-- output'u dosyaya yaz.
-
+            File.WriteAllText( textBox1.Text.Replace(".xml","_output.xml"), output, Encoding.UTF8);
 
         }
 
@@ -62,11 +63,13 @@ namespace Transformer
             using (XmlReader reader = XmlReader.Create(new StringReader(xslt), set))
             {
                 transform.Load(reader, new XsltSettings(true, true), new XmlUrlResolver());
+
             }
             //cachedTransforms.Add(xslt, transform);
             //}
             return transform;
         }
+    
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
